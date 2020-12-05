@@ -5,227 +5,49 @@
     <title>Document</title>
 </head>
 <body>
-<h1 id="title"></h1>
-<p id="other"></p>
-<form name="form" id="form" action="">
-<input type="text" id="questions" style="width:100%">
-<p id="buttons"></p>
-</form>
-<script>
+    <h1 id="title"></h1>
+    <p id="other"></p>
+    <form name="form" id="form" action="">
+        <input type="text" id="questions" style="width:100%">
+        <p id="buttons"></p>
+    </form>
+    <!--配列シャッフル-->
+    <script src="./calc/aryShuffle.js"></script>
+    <!--ホーム画面表示-->
+    <script src="./openTrivia/homeQuestion.js"></script>
+    <!--開始ボタン実行-->
+    <script src="./openTrivia/startQuestion.js"></script>
+    <!--問題の取得-->
+    <script src="./openTrivia/getQuestions.js"></script>
+    <!--問題の出力-->
+    <script src="./openTrivia/displayQuestions.js"></script>
+    <!--選択肢ボタンの実行-->
+    <script src="./openTrivia/answerQuestion.js"></script>
+    <!--問題終了-->
+    <script src="./openTrivia/endQuestion.js"></script>
+    <script>
 
-//タイトルオブジェクト生成
-const eleTitle = document.getElementById('title');
-
-//ジャンル/難易度オブジェクト生成
-const eleOther = document.getElementById('other');
-
-//問題オブジェクト生成
-const eleQuestions = document.getElementById('questions');
-
-//ボタンオブジェクト生成
-const eleButtons = document.getElementById('buttons');
-
-//問題取得変数
-let questionData = {};
-
-//正答数保持変数
-let numCorrectAnswers = 0;
-
-//ホーム画面表示
-homeQuestion();
-
-//ホーム画面表示
-function homeQuestion(){
-
-    //正答数初期化
-    numCorrectAnswers = 0;
-
-    //前回のホームへ戻るボタン削除
-    eleButtons.textContent = null;
-
-    //タイトル追加
-    eleTitle.textContent = 'ようこそ';
-
-    //開始ボタン作成
-    const eleStart = document.createElement('input');
-    eleStart.setAttribute('id','start');
-    eleStart.setAttribute('type','button');
-    eleStart.setAttribute('value','開始');
-
-    //開始ボタン追加
-    eleButtons.appendChild(eleStart);
-
-    //開始ボタンに関数紐付け
-    const eleStartQuestion = document.getElementById('start');
-    eleStartQuestion.addEventListener('click',startQuestion,false);
-
-}
-
-//開始ボタン実行
-function startQuestion(){
-
-    //開始ボタン削除
-    eleButtons.textContent = null;
-
-    //取得中の表示
-    eleTitle.textContent = '取得中';
-    eleQuestions.value = '少々お待ちください';
+        //タイトルオブジェクト生成
+        const eleTitle = document.getElementById('title');
     
-    //問題の取得
-    getQuestions();
-}
-
-//問題の取得
-function getQuestions(){
-
-    fetch('https://opentdb.com/api.php?amount=10&type=multiple')
-    .then((response) => {
-    if(response.ok) {
-        return response.json();
-    } else {
-        throw new Error();
-    }
-    })
-    .then((json) => {
-
-        //jsonでデータ取得
-        questionData = json['results'];
-
-        //問題の出力(問題1を表示)
-        displayQuestions(0);
-    })
-    .catch((error) => console.log(error));
-}
-
-//問題の出力
-function displayQuestions(quesNum){
-
-    //タイトル出力
-    eleTitle.textContent = '問題' + (quesNum + 1);
-
-    //ジャンル/難易度生成
-    const eleGenre = document.createElement('p');
-    eleGenre.textContent = '[ジャンル]' + questionData[quesNum]['category'];
-    eleGenre.style.margin = '0';
-    const eleDifficult = document.createElement('p');
-    eleDifficult.textContent = '[難易度]' + questionData[quesNum]['difficulty'];
-    eleDifficult.style.margin = '0';
-
-    //ジャンル/難易度出力
-    eleOther.appendChild(eleGenre);
-    eleOther.appendChild(eleDifficult);
-
-    //問題出力
-    eleQuestions.value = questionData[quesNum]['question'];
-
-    //答え取得
-    const correctAnswer = questionData[quesNum]['correct_answer'];
-
-    //選択肢に答えを追加
-    questionData[quesNum]['incorrect_answers'].push(correctAnswer);
-
-    //選択肢をシャッフル
-    questionData[quesNum]['incorrect_answers'].shuffle();
-
-    //選択肢の数だけループしながらボタン生成
-    questionData[quesNum]['incorrect_answers'].forEach(function(answer,cntAnswer){
-
-        //選択肢ボタン作成
-        const eleAnswer = document.createElement('input');
-        eleAnswer.setAttribute('id','answer' + cntAnswer);
-        eleAnswer.setAttribute('type','button');
-        eleAnswer.setAttribute('value',answer);
-
-        //選択肢ボタン追加
-        eleButtons.appendChild(eleAnswer);
-
-        //改行追加
-        const eleNewLine = document.createElement('br');
-        eleButtons.appendChild(eleNewLine);
-
-        //選択肢ボタンに関数紐付け
-        const eleAnswerQuestion = document.getElementById('answer' + cntAnswer);
-        eleAnswerQuestion.addEventListener('click',{
-            answer:answer,
-            correctAnswer:correctAnswer,
-            nextNum:quesNum + 1,
-            handleEvent:answerQuestion
-            },false
-        );
- 
-    });
-}
-
-//選択肢ボタンの実行
-function answerQuestion(){
-
-    //選択した値取得
-    const answer = this.answer;
-
-    //答え取得
-    const correctAnswer = this.correctAnswer;
-
-    //次の問題への数値を取得
-    const nextNum = this.nextNum;
-
-    //正答数加算
-    if(answer === correctAnswer){
-        numCorrectAnswers++;
-    }
-
-    //前回の問題の「ジャンル/難易度」「選択肢」削除
-    eleOther.textContent = null;
-    eleButtons.textContent = null;
-
-    //問題がなくなるまで表示し、なくなれば終了
-    if(questionData.length > nextNum){
-        //次の問題表示
-        displayQuestions(nextNum);
-    }else{
-        //問題終了
-        endQuestion();
-    }
-}
-
-//問題終了
-function endQuestion(){
-
-    //タイトル出力
-    eleTitle.textContent = 'あなたの正答数は' + numCorrectAnswers + 'です！！';
-
-    //問題出力
-    eleQuestions.value = '再チャレンジしたい場合は以下をクリック！！';
-
-    //ホームへ戻るボタン作成
-    const eleHome = document.createElement('input');
-    eleHome.setAttribute('id','home');
-    eleHome.setAttribute('type','button');
-    eleHome.setAttribute('value','ホームへ戻る');
-
-    //ホームへ戻るボタン追加
-    eleButtons.appendChild(eleHome);
-
-    //ホームへ戻るに関数紐付け
-    const eleHomeQuestion = document.getElementById('home');
-    eleHomeQuestion.addEventListener('click',homeQuestion,false);
-
-}
-
-//問題シャッフル
-Array.prototype.shuffle = function(){
-
-    //配列数取得
-    let len = this.length;
-    while(len){
-        const randNum = Math.floor(Math.random() * len);
-        const randData = this[--len];
-        this[len] = this[randNum];
-        this[randNum] = randData;
-    }
-
-    return this;
-}
-
-</script>
+        //ジャンル/難易度オブジェクト生成
+        const eleOther = document.getElementById('other');
+    
+        //問題オブジェクト生成
+        const eleQuestions = document.getElementById('questions');
+    
+        //ボタンオブジェクト生成
+        const eleButtons = document.getElementById('buttons');
+    
+        //問題取得変数
+        let questionData = [];
+    
+        //正答数保持変数
+        let numCorrectAnswers = 0;
+    
+        //ホーム画面表示
+        homeQuestion();
+    
+    </script>
 </body>
 </html>
