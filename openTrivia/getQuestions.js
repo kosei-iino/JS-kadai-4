@@ -1,21 +1,17 @@
 //問題の取得
-getQuestions = () => {
+getQuestions = async () => {
 
-    fetch('https://opentdb.com/api.php?amount=10&type=multiple')
-        .then((response) => {
-            if(response.ok) {
-                return response.json();
-            } else {
-                throw new Error();
-            }
-        })
-        .then((json) => {
+    try{
+        const response = await fetch('https://opentdb.com/api.php?amount=10&type=multiple');
+        const json = await response.json();
 
-            //jsonでデータセット
-            dataQuestion = json['results'];
+        //jsonでデータセット
+        dataQuestion = json['results'];
 
-            //インスタンス生成（取得する問題の要素番号）
-            createQuestion(0);
-        })
-        .catch((error) => console.log(error));
+        //インスタンス生成（取得する問題の要素番号）
+        createQuestion(0);
+                
+    }catch(e){
+        console.log(e);
+    }
 }
