@@ -1,13 +1,15 @@
 //問題シャッフル
-const aryShuffle = (aryAnswer) => {
+const aryShuffle = (aryFormer,aryDate) => {
 
-    let len = aryAnswer.length;
+    //データを追加
+    const aryShuffle = aryFormer.concat(aryDate);
+
+    let len = aryShuffle.length;
     while(len){
         const randNum = Math.floor(Math.random() * len);
-        const randData = aryAnswer[--len];
-        aryAnswer[len] = aryAnswer[randNum];
-        aryAnswer[randNum] = randData;
+        const randData = aryShuffle[--len];
+        aryShuffle[len] = aryShuffle[randNum];
+        aryShuffle[randNum] = randData;
     }
-
-    return aryAnswer;
+    return aryShuffle;
 }

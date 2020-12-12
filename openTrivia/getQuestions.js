@@ -1,5 +1,5 @@
 //問題の取得
-const getQuestions = () => {
+getQuestions = () => {
 
     fetch('https://opentdb.com/api.php?amount=10&type=multiple')
         .then((response) => {
@@ -8,14 +8,14 @@ const getQuestions = () => {
             } else {
                 throw new Error();
             }
-            })
+        })
         .then((json) => {
 
-            //jsonでデータ取得
-            questionData = json['results'];
+            //jsonでデータセット
+            dataQuestion = json['results'];
 
-            //問題の出力(問題1を表示)
-            displayQuestions(0);
+            //インスタンス生成（取得する問題の要素番号）
+            createQuestion(0);
         })
         .catch((error) => console.log(error));
 }

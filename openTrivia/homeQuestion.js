@@ -1,10 +1,7 @@
-//ホーム画面表示
-const homeQuestion = () => {
+//ホーム表示
+homeQuestion = () => {
 
-    //正答数初期化
-    numCorrectAnswers = 0;
-
-    //前回のホームへ戻るボタン削除
+    //前回のホームボタン削除
     eleButtons.textContent = null;
 
     //タイトル追加
@@ -22,5 +19,4 @@ const homeQuestion = () => {
     //開始ボタンに関数紐付け
     const eleStartQuestion = document.getElementById('start');
     eleStartQuestion.addEventListener('click',startQuestion,false);
-
 }
