@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <h1 id="title"></h1>
+    <p id="other"></p>
+    <form name="form" id="form" action="">
+        <input type="text" id="questions" style="width:100%">
+        <p id="buttons"></p>
+    </form>
+    <!--配列シャッフル-->
+    <script src="./calc/aryShuffle.js"></script>
+    <!--ホーム表示-->
+    <script src="./openTrivia/homeQuestion.js"></script>
+    <!--開始ボタン実行-->
+    <script src="./openTrivia/startQuestion.js"></script>
+    <!--問題の取得-->
+    <script src="./openTrivia/getQuestions.js"></script>
+    <!--インスタンス生成-->
+    <script src="./openTrivia/createQuestion.js"></script>
+    <!--クイズクラス-->
+    <script src="./openTrivia/Quiz.js"></script>
+    <script>
+        //タイトルオブジェクト生成
+        const eleTitle = document.getElementById('title');
+
+        //ジャンル/難易度オブジェクト生成
+        const eleOther = document.getElementById('other');
+
+        //問題オブジェクト生成
+        const eleQuestions = document.getElementById('questions');
+
+        //ボタンオブジェクト生成
+        const eleButtons = document.getElementById('buttons');
+
+        //正答数保持変数
+        let numCorrectAnswers = 0;
+
+        //問題保持
+        let dataQuestion = [];
+
+        //ホーム表示
+        homeQuestion();
+    </script>
+</body>
+</html>
